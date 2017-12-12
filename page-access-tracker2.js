@@ -6,7 +6,7 @@
             let accessed_page = {
                 "visitor_id": `${localStorage.tracking}`,
                 "access_date": `${new Date().toJSON()}`,
-                "accessed_url": "www.examplo.com" //`${window.location.href}`
+                "accessed_url": `${window.location.href}`
             };
 
             fetch('https://page-access-tracker.herokuapp.com/api/accessed_pages/', {
