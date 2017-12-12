@@ -6,7 +6,7 @@
             let accessed_page = {
                 "visitor_id": `${localStorage.tracking}`,
                 "access_date": `${new Date().toJSON()}`,
-                "accessed_url": `${window.location.href}`
+                "accessed_url": "www.examplo.com" //`${window.location.href}`
             };
 
             fetch('https://page-access-tracker.herokuapp.com/api/accessed_pages/', {
@@ -35,15 +35,11 @@
             var myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json")
 
-            fetch('https://page-access-tracker.herokuapp.com/api/contacts/', {
+            return fetch('https://page-access-tracker.herokuapp.com/api/contacts/', {
                 method: 'POST',
                 headers: myHeaders,
                 body: JSON.stringify({ contact })
             }).then(function (response) {
                 return response.json();
-            }).then(function (json) {
-                console.log(json)
-            }).catch(function (error) {
-                console.log('There has been a problem with your fetch operation: ' + error.message);
             });
         }
