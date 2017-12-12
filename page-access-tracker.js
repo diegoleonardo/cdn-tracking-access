@@ -1,30 +1,32 @@
-var connection = new WebSocket('ws://user-tracking-app.herokuapp.com/socket/websocket');
-        
-        // When the connection is open, send some data to the server
-        connection.onopen = function () {
-           
-            connection.send('{"topic":"room:tracking","ref":"1","payload":{},"event":"phx_join"}');
+if(localStorage.tracking){
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type","application/json")
             
-            if(localStorage.tracking){
-                connection.send(`{"topic":"room:tracking","ref":"","payload":{"id":${localStorage.tracking},"url": "${window.location.href}", "accessDate": "${new Date().toJSON()}"},"event":"tracking_suspect"}`);
-            }else{
-                connection.send(`{"topic":"room:tracking","ref":"","payload":{"url": "${window.location.href}", "accessDate": "${new Date().toJSON()}"},"event":"tracking_suspect"}`);
-            }
-        };
-
-        // Log errors
-        connection.onerror = function (error) {
-            console.log('WebSocket Error ' + error);
-        };
-
-        // Log messages from the server
-        connection.onmessage = function (e) {
-            json = JSON.parse(e.data)
+            let accessed_page = {
+		                            "visitor_id": `${localStorage.tracking}`,
+		                            "access_date": `${new Date().toJSON()}`, 
+		                            "accessed_url": `${window.location.href}`
+	                            };
             
-            if(json.payload.response.id){
-                if(!localStorage.tracking){
-                    localStorage.setItem("tracking", `${json.payload.response.id}`);
-                }
-            }
-            console.log(e.data)
-        };
+            fetch('https://page-access-tracker.herokuapp.com/api/accessed_pages/', { 
+                    method: 'POST',
+                    headers: myHeaders,
+                    body: JSON.stringify({accessed_page})
+            }).then(function(response) { 
+	            return response.json();
+            }).then(function(json) {
+	            localStorage.setItem("tracking", `${json.data.id}`); 
+            }).catch(function(error) {
+                console.log('There has been a problem with your fetch operation: ' + error.message);
+            }); 
+        }
+        else{
+            var myInit = { method: 'POST', cache: 'default' };
+            fetch('https://page-access-tracker.herokuapp.com/api/visitors/', myInit).then(function(response) { 
+	            return response.json();
+            }).then(function(json) {
+	            localStorage.setItem("tracking", `${json.data.id}`); 
+            }).catch(function(error) {
+                console.log('There has been a problem with your fetch operation: ' + error.message);
+            }); 
+        } 
