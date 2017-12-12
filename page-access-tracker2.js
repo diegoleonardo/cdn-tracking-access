@@ -1,4 +1,4 @@
-if (localStorage.tracking) {
+        if (localStorage.tracking) {
 
             var myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json")
@@ -6,7 +6,7 @@ if (localStorage.tracking) {
             let accessed_page = {
                 "visitor_id": `${localStorage.tracking}`,
                 "access_date": `${new Date().toJSON()}`,
-                "accessed_url": `${window.location.href}`
+                "accessed_url": "www.examplo.com" //`${window.location.href}`
             };
 
             fetch('https://page-access-tracker.herokuapp.com/api/accessed_pages/', {
@@ -26,6 +26,23 @@ if (localStorage.tracking) {
                 return response.json();
             }).then(function (json) {
                 localStorage.setItem("tracking", `${json.data.id}`);
+            }).catch(function (error) {
+                console.log('There has been a problem with your fetch operation: ' + error.message);
+            });
+        }
+
+        function registraContato(contact) {
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json")
+
+            fetch('https://page-access-tracker.herokuapp.com/api/contacts/', {
+                method: 'POST',
+                headers: myHeaders,
+                body: JSON.stringify({ contact })
+            }).then(function (response) {
+                return response.json();
+            }).then(function (json) {
+                console.log(json)
             }).catch(function (error) {
                 console.log('There has been a problem with your fetch operation: ' + error.message);
             });
